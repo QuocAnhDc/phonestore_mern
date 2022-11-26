@@ -130,7 +130,7 @@ export default function OrderListScreen() {
                     type="button"
                     variant="light"
                     onClick={() => {
-                      navigate(`/order/${order._id}`);
+                      navigate(`/admin/orders/${order._id}`);
                     }}
                   >
                     Details

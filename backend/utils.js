@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
-import mg from 'mailgun-js';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv'
+dotenv.config()
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -41,11 +43,14 @@ export const isAdmin = (req, res, next) => {
   }
 };
 
-export const mailgun = () =>
-  mg({
-    apiKey: process.env.MAILGUN_API_KEY,
-    domain: process.env.MAILGUN_DOMIAN,
-  });
+export const transport = nodemailer.createTransport({
+  host: "smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: process.env.MAILTRAP_USER,
+    pass: process.env.MAILTRAP_PASSWORD
+  }
+});
 
 export const payOrderEmailTemplate = (order) => {
   return `<h1>Thanks for shopping with us</h1>

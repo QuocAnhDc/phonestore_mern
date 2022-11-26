@@ -36,18 +36,23 @@ const reducer = (state, action) => {
 
 const prices = [
   {
-    name: '$1 to $50',
-    value: '1-50',
+    name: '$100 to $400',
+    value: '100-400',
   },
   {
-    name: '$51 to $200',
-    value: '51-200',
+    name: '$401 to $700',
+    value: '401-700',
   },
   {
-    name: '$201 to $1000',
-    value: '201-1000',
+    name: '$701 to $1000',
+    value: '701-1000',
+  },
+  {
+    name: 'over $1000',
+    value: '1001-99999',
   },
 ];
+
 
 export const ratings = [
   {
@@ -250,7 +255,6 @@ export default function SearchScreen() {
               {products.length === 0 && (
                 <MessageBox>No Product Found</MessageBox>
               )}
-
               <Row>
                 {products.map((product) => (
                   <Col sm={6} lg={4} className="mb-3" key={product._id}>

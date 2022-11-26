@@ -13,7 +13,10 @@ const reducer = (state, action) => {
     case "FETCH_REQUEST":
       return { ...state, loading: true };
     case "FETCH_SUCCESS":
-      return { ...state, products: action.payload, loading: false };
+      return { 
+        ...state, 
+        products: action.payload, 
+        loading: false };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
     default:
@@ -45,7 +48,7 @@ function HomeScreen() {
   return (
     <div>
       <Helmet>
-        <title>Amazona</title>
+        <title>PhoneStore</title>
       </Helmet>
       <h1>Featured Products</h1>
       <div className="products">
