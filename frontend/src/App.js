@@ -49,6 +49,7 @@ function App() {
   };
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -59,7 +60,16 @@ function App() {
         toast.error(getError(err));
       }
     };
+    const fetchBrands = async () => {
+      try {
+        const { data } = await axios.get(`/api/products/brands`);
+        setBrands(data);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    }
     fetchCategories();
+    fetchBrands();
   }, []);
   return (
     <BrowserRouter>
@@ -162,6 +172,19 @@ function App() {
                 >
                   <Nav.Link>{category}</Nav.Link>
                 </LinkContainer>
+              </Nav.Item>
+            ))}
+            <Nav.Item>
+              <strong>Brands</strong>
+            </Nav.Item>
+            {brands.map((brand) => (
+              <Nav.Item key={brand}>
+                {/* <LinkContainer
+                  to={`/search?category=${brand}`}
+                  onClick={() => setSidebarIsOpen(false)}
+                > */}
+                  <Nav.Link>{brand}</Nav.Link>
+                {/* </LinkContainer> */}
               </Nav.Item>
             ))}
           </Nav>
@@ -270,7 +293,14 @@ function App() {
                 }
               ></Route>
 
-              <Route path="/" element={<HomeScreen />} />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <HomeScreen />
+                  </ProtectedRoute>
+                }
+              ></Route>
             </Routes>
           </Container>
         </main>

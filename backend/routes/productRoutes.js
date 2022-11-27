@@ -10,6 +10,21 @@ productRouter.get('/', async (req, res) => {
   res.send(products);
 });
 
+productRouter.get('/paginate', async (req, res) => {
+  const { query } = req;
+  const page = query.page || 1;
+  const pageSize = 8;
+  const products = await Product.find()
+                                    .skip(pageSize * (page - 1))
+                                    .limit(pageSize);;
+  const countProducts = await Product.countDocuments();
+  res.send({
+    products,
+    page,
+    pages: Math.ceil(countProducts / pageSize),
+  });
+});
+
 productRouter.post(
   '/',
   isAuth,
@@ -18,7 +33,7 @@ productRouter.post(
     const newProduct = new Product({
       name: 'sample name ' + Date.now(),
       slug: 'sample-name-' + Date.now(),
-      image: '/images/p1.jpg',
+      image: 'url img here',
       price: 0,
       category: 'sample category',
       brand: 'sample brand',
@@ -215,6 +230,13 @@ productRouter.get(
   expressAsyncHandler(async (req, res) => {
     const categories = await Product.find().distinct('category');
     res.send(categories);
+  })
+);
+productRouter.get(
+  '/brands',
+  expressAsyncHandler(async (req, res) => {
+    const brands = await Product.find().distinct('brand');
+    res.send(brands);
   })
 );
 
