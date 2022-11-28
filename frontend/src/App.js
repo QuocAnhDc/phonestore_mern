@@ -179,12 +179,12 @@ function App() {
             </Nav.Item>
             {brands.map((brand) => (
               <Nav.Item key={brand}>
-                {/* <LinkContainer
-                  to={`/search?category=${brand}`}
+                <LinkContainer
+                  to={`/search?brand=${brand}`}
                   onClick={() => setSidebarIsOpen(false)}
-                > */}
+                >
                   <Nav.Link>{brand}</Nav.Link>
-                {/* </LinkContainer> */}
+                </LinkContainer>
               </Nav.Item>
             ))}
           </Nav>

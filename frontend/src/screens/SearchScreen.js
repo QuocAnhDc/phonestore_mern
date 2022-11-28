@@ -81,6 +81,7 @@ export default function SearchScreen() {
   const { search } = useLocation();
   const sp = new URLSearchParams(search); // /search?category=Shirts
   const category = sp.get('category') || 'all';
+  const brand = sp.get('brand') || 'all';
   const query = sp.get('query') || 'all';
   const price = sp.get('price') || 'all';
   const rating = sp.get('rating') || 'all';
@@ -97,7 +98,7 @@ export default function SearchScreen() {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}`
+          `/api/products/search?page=${page}&query=${query}&brand=${brand}&category=${category}&price=${price}&rating=${rating}&order=${order}`
         );
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
@@ -108,9 +109,10 @@ export default function SearchScreen() {
       }
     };
     fetchData();
-  }, [category, error, order, page, price, query, rating]);
+  }, [category, brand, error, order, page, price, query, rating]);
 
   const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -120,17 +122,27 @@ export default function SearchScreen() {
         toast.error(getError(err));
       }
     };
+    const fetchBrands = async () => {
+      try {
+        const { data } = await axios.get(`/api/products/brands`);
+        setBrands(data);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
     fetchCategories();
+    fetchBrands();
   }, [dispatch]);
 
   const getFilterUrl = (filter) => {
     const filterPage = filter.page || page;
     const filterCategory = filter.category || category;
+    const filterBrand = filter.brand || brand;
     const filterQuery = filter.query || query;
     const filterRating = filter.rating || rating;
     const filterPrice = filter.price || price;
     const sortOrder = filter.order || order;
-    return `/search?category=${filterCategory}&query=${filterQuery}&price=${filterPrice}&rating=${filterRating}&order=${sortOrder}&page=${filterPage}`;
+    return `/search?category=${filterCategory}&brand=${filterBrand}&query=${filterQuery}&price=${filterPrice}&rating=${filterRating}&order=${sortOrder}&page=${filterPage}`;
   };
   return (
     <div>
@@ -155,6 +167,29 @@ export default function SearchScreen() {
                   <Link
                     className={c === category ? 'text-bold' : ''}
                     to={getFilterUrl({ category: c })}
+                  >
+                    {c}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <h3>Brand</h3>
+          <div>
+            <ul>
+              <li>
+                <Link
+                  className={'all' === brand ? 'text-bold' : ''}
+                  to={getFilterUrl({ brand: 'all' })}
+                >
+                  Any
+                </Link>
+              </li>
+              {brands.map((c) => (
+                <li key={c}>
+                  <Link
+                    className={c === brand ? 'text-bold' : ''}
+                    to={getFilterUrl({ brand: c })}
                   >
                     {c}
                   </Link>
