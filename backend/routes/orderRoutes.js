@@ -102,6 +102,21 @@ orderRouter.get(
     }
   })
 );
+orderRouter.get(
+  '/:id/method',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      res.send({
+        message: 'Getting payment method',
+        paymethod: order.paymentMethod
+      });
+    } else {
+      res.status(404).send({ message: 'Order Not Found' });
+    }
+  })
+);
 
 orderRouter.put(
   '/:id/deliver',

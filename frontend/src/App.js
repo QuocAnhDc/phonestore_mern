@@ -30,11 +30,16 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardScreen from './screens/DashboardScreen';
 import AdminRoute from './components/AdminRoute';
 import ProductListScreen from './screens/ProductListScreen';
+import BrandListScreen from './screens/BrandListScreen';
+import CategoryListScreen from './screens/CategoryListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import MapScreen from './screens/MapScreen';
+import BrandEditScreen from './screens/BrandEditScreen';
+import CategoryEditScreen from './screens/CategoryEditScreen';
+
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -139,6 +144,12 @@ function App() {
                       </LinkContainer>
                       <LinkContainer to="/admin/products">
                         <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/brands">
+                        <NavDropdown.Item>Brand</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/categories">
+                        <NavDropdown.Item>Category</NavDropdown.Item>
                       </LinkContainer>
                       <LinkContainer to="/admin/orders">
                         <NavDropdown.Item>Orders</NavDropdown.Item>
@@ -265,6 +276,38 @@ function App() {
                 element={
                   <AdminRoute>
                     <ProductListScreen />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/brands"
+                element={
+                  <AdminRoute>
+                    <BrandListScreen />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/brand/:id"
+                element={
+                  <AdminRoute>
+                    <BrandEditScreen />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/categories"
+                element={
+                  <AdminRoute>
+                    <CategoryListScreen />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/category/:id"
+                element={
+                  <AdminRoute>
+                    <CategoryEditScreen />
                   </AdminRoute>
                 }
               ></Route>

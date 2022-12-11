@@ -61,6 +61,7 @@ export default function OrderScreen() {
       loading,
       error,
       order,
+      paymentMethod,
       successPay,
       loadingPay,
       loadingDeliver,
@@ -70,6 +71,7 @@ export default function OrderScreen() {
   ] = useReducer(reducer, {
     loading: true,
     order: {},
+    paymentMethod: '',
     error: '',
     successPay: false,
     loadingPay: false,
@@ -91,6 +93,9 @@ export default function OrderScreen() {
       });
   }
 
+  function getPaymentMethod(data, actions){
+    
+  }
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
       try {
