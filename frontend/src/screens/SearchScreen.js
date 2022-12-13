@@ -114,24 +114,16 @@ export default function SearchScreen() {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchElement = async () => {
       try {
-        const { data } = await axios.get(`/api/products/categories`);
-        setCategories(data);
+        const { data } = await axios.get(`/api/products/element`);
+        setCategories(data.categories);
+        setBrands(data.brands);
       } catch (err) {
         toast.error(getError(err));
       }
     };
-    const fetchBrands = async () => {
-      try {
-        const { data } = await axios.get(`/api/products/brands`);
-        setBrands(data);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
-    fetchCategories();
-    fetchBrands();
+    fetchElement();
   }, [dispatch]);
 
   const getFilterUrl = (filter) => {
@@ -163,12 +155,12 @@ export default function SearchScreen() {
                 </Link>
               </li>
               {categories.map((c) => (
-                <li key={c}>
+                <li key={c._id}>
                   <Link
-                    className={c === category ? 'text-bold' : ''}
-                    to={getFilterUrl({ category: c })}
+                    className={c._id === category ? 'text-bold' : ''}
+                    to={getFilterUrl({ category: c._id })}
                   >
-                    {c}
+                    {c.category}
                   </Link>
                 </li>
               ))}
@@ -186,12 +178,12 @@ export default function SearchScreen() {
                 </Link>
               </li>
               {brands.map((c) => (
-                <li key={c}>
+                <li key={c._id}>
                   <Link
-                    className={c === brand ? 'text-bold' : ''}
-                    to={getFilterUrl({ brand: c })}
+                    className={c._id === brand ? 'text-bold' : ''}
+                    to={getFilterUrl({ brand: c._id })}
                   >
-                    {c}
+                    {c.brand}
                   </Link>
                 </li>
               ))}
@@ -255,21 +247,12 @@ export default function SearchScreen() {
                 <Col md={6}>
                   <div>
                     {countProducts === 0 ? 'No' : countProducts} Results
-                    {query !== 'all' && ' : ' + query}
-                    {category !== 'all' && ' : ' + category}
-                    {price !== 'all' && ' : Price ' + price}
-                    {rating !== 'all' && ' : Rating ' + rating + ' & up'}
-                    {query !== 'all' ||
-                    category !== 'all' ||
-                    rating !== 'all' ||
-                    price !== 'all' ? (
-                      <Button
+                    <Button
                         variant="light"
                         onClick={() => navigate('/search')}
                       >
-                        <i className="fas fa-times-circle"></i>
+                        Reset
                       </Button>
-                    ) : null}
                   </div>
                 </Col>
                 <Col className="text-end">

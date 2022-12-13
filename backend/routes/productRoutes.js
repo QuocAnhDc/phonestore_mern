@@ -1,6 +1,8 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
+import Category from "../models/categoryModel.js";
+import Brand from "../models/brandModel.js";
 import { isAuth, isAdmin } from '../utils.js';
 
 const productRouter = express.Router();
@@ -8,7 +10,7 @@ const productRouter = express.Router();
 productRouter.get(
   '/',
   async (req, res) => {
-  const products = await Product.find();
+  const products = await Product.find().populate('brand','brand').populate('category','category');
   res.send(products);
   }
 );
@@ -38,8 +40,8 @@ productRouter.post(
       slug: 'sample-name-' + Date.now(),
       image: 'url img here',
       price: 0,
-      category: 'sample category',
-      brand: 'sample brand',
+      // category: 'sample category',
+      // brand: 'sample brand',
       countInStock: 0,
       rating: 0,
       numReviews: 0,
@@ -137,7 +139,7 @@ productRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const products = await Product.find()
+    const products = await Product.find().populate('brand','brand').populate('category','category')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
     const countProducts = await Product.countDocuments();
@@ -247,6 +249,18 @@ productRouter.get(
   })
 );
 
+productRouter.get(
+  '/element',
+  expressAsyncHandler(async (req, res) => {
+    const brands = await Brand.find();
+    const categories = await Category.find();
+    res.send({
+      brands : brands,
+      categories: categories
+    });
+  })
+);
+
 productRouter.get('/slug/:slug', async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug });
   if (product) {
@@ -263,5 +277,7 @@ productRouter.get('/:id', async (req, res) => {
     res.status(404).send({ message: 'Product Not Found' });
   }
 });
+
+
 
 export default productRouter;

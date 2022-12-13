@@ -57,24 +57,36 @@ function App() {
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    // const fetchCategories = async () => {
+    //   try {
+    //     const { data } = await axios.get(`/api/products/categories`);
+    //     setCategories(data);
+    //   } catch (err) {
+    //     toast.error(getError(err));
+    //   }
+    // };
+    // const fetchBrands = async () => {
+    //   try {
+    //     const { data } = await axios.get(`/api/products/brands`);
+    //     setBrands(data);
+    //   } catch (err) {
+    //     toast.error(getError(err));
+    //   }
+    // }
+    const fetchElement = async () => {
       try {
-        const { data } = await axios.get(`/api/products/categories`);
-        setCategories(data);
+        const { data } = await axios.get(`/api/products/element`);
+        setCategories(data.categories);
+        setBrands(data.brands);
+        // console.log(data.categories)
+        // console.log(data.brands)
       } catch (err) {
         toast.error(getError(err));
       }
     };
-    const fetchBrands = async () => {
-      try {
-        const { data } = await axios.get(`/api/products/brands`);
-        setBrands(data);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    }
-    fetchCategories();
-    fetchBrands();
+    // fetchCategories();
+    // fetchBrands();
+    fetchElement();
   }, []);
   return (
     <BrowserRouter>
@@ -176,12 +188,12 @@ function App() {
               <strong>Categories</strong>
             </Nav.Item>
             {categories.map((category) => (
-              <Nav.Item key={category}>
+              <Nav.Item key={category._id}>
                 <LinkContainer
-                  to={`/search?category=${category}`}
+                  to={`/search?category=${category._id}`}
                   onClick={() => setSidebarIsOpen(false)}
                 >
-                  <Nav.Link>{category}</Nav.Link>
+                  <Nav.Link>{category.category}</Nav.Link>
                 </LinkContainer>
               </Nav.Item>
             ))}
@@ -189,12 +201,12 @@ function App() {
               <strong>Brands</strong>
             </Nav.Item>
             {brands.map((brand) => (
-              <Nav.Item key={brand}>
+              <Nav.Item key={brand._id}>
                 <LinkContainer
-                  to={`/search?brand=${brand}`}
+                  to={`/search?brand=${brand._id}`}
                   onClick={() => setSidebarIsOpen(false)}
                 >
-                  <Nav.Link>{brand}</Nav.Link>
+                  <Nav.Link>{brand.brand}</Nav.Link>
                 </LinkContainer>
               </Nav.Item>
             ))}

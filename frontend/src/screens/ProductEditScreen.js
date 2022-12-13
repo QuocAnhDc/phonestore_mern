@@ -17,7 +17,9 @@ const reducer = (state, action) => {
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      return { ...state, loading: false };
+      return { 
+        ...state,
+        loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
     case 'UPDATE_REQUEST':
@@ -48,7 +50,14 @@ export default function ProductEditScreen() {
 
   const { state } = useContext(Store);
   const { userInfo } = state;
-  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
+  const [
+    { 
+      loading,
+      error, 
+      loadingUpdate, 
+      loadingUpload 
+    }, 
+    dispatch] =
     useReducer(reducer, {
       loading: true,
       error: '',
@@ -63,12 +72,15 @@ export default function ProductEditScreen() {
   const [countInStock, setCountInStock] = useState('');
   const [brand, setBrand] = useState('');
   const [description, setDescription] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
         const { data } = await axios.get(`/api/products/${productId}`);
+        //const { element } = await axios.get(`/api/products/element`);
         setName(data.name);
         setSlug(data.slug);
         setPrice(data.price);
@@ -78,7 +90,7 @@ export default function ProductEditScreen() {
         setCountInStock(data.countInStock);
         setBrand(data.brand);
         setDescription(data.description);
-        dispatch({ type: 'FETCH_SUCCESS' });
+        dispatch({ type: 'FETCH_SUCCESS'});
       } catch (err) {
         dispatch({
           type: 'FETCH_FAIL',
@@ -86,7 +98,19 @@ export default function ProductEditScreen() {
         });
       }
     };
+    const fetchElement = async () => {
+      try {
+        const { data } = await axios.get(`/api/products/element`);
+        setCategories(data.categories);
+        setBrands(data.brands);
+        // console.log(data.categories)
+        // console.log(data.brands)
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
     fetchData();
+    fetchElement();
   }, [productId]);
 
   const submitHandler = async (e) => {
@@ -226,22 +250,39 @@ export default function ProductEditScreen() {
             />
             {loadingUpload && <LoadingBox></LoadingBox>}
           </Form.Group>
-
-          <Form.Group className="mb-3" controlId="category">
-            <Form.Label>Category</Form.Label>
-            <Form.Control
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            />
-          </Form.Group>
           <Form.Group className="mb-3" controlId="brand">
             <Form.Label>Brand</Form.Label>
-            <Form.Control
+            {/* <Form.Control
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
               required
-            />
+            /> */}
+            <Form.Select
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              required
+            >
+              {brands.map((brand) => (
+                <option key = {brand._id} value={brand._id} >{brand.brand}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="category">
+            <Form.Label>Category</Form.Label>
+            {/* <Form.Control
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            /> */}
+            <Form.Select
+              value={category}
+              onChange={(e) => setCategory(e.currentTarget.value)}
+              required
+            >
+              {categories.map((category) => (
+                <option key = {category._id} value={category._id} >{category.category}</option>
+              ))}
+            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="countInStock">
             <Form.Label>Count In Stock</Form.Label>

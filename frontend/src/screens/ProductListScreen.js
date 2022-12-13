@@ -176,8 +176,8 @@ export default function ProductListScreen() {
                   <td>{product._id}</td>
                   <td>{product.name}</td>
                   <td>{product.price}</td>
-                  <td>{product.category}</td>
-                  <td>{product.brand}</td>
+                  <td>{product.category ? product.category.category : 'No Category'}</td>
+                  <td>{product.brand ? product.brand.brand : 'No Brand'}</td>
                   <td>
                     <Button
                       type="button"
