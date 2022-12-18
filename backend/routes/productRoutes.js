@@ -63,9 +63,11 @@ productRouter.put(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
+      const discount = await Discount.findById(req.body.discount);
       product.name = req.body.name;
       product.slug = req.body.slug;
       product.price = req.body.price;
+      product.final_price = req.body.price-((req.body.price)*(discount.percent_discount)/100);
       product.image = req.body.image;
       product.images = req.body.images;
       product.category = req.body.category;
@@ -192,7 +194,7 @@ productRouter.get(
       price && price !== 'all'
         ? {
             // 1-50
-            price: {
+            final_price: {
               $gte: Number(price.split('-')[0]),
               $lte: Number(price.split('-')[1]),
             },
@@ -202,9 +204,9 @@ productRouter.get(
       order === 'featured'
         ? { featured: -1 }
         : order === 'lowest'
-        ? { price: 1 }
+        ? { final_price: 1 }
         : order === 'highest'
-        ? { price: -1 }
+        ? { final_price: -1 }
         : order === 'toprated'
         ? { rating: -1 }
         : order === 'newest'
@@ -217,7 +219,7 @@ productRouter.get(
       ...brandFilter,
       ...priceFilter,
       ...ratingFilter,
-    })
+    }).populate('discount')
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);

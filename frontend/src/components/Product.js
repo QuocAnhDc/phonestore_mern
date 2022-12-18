@@ -5,9 +5,12 @@ import Rating from './Rating';
 import axios from 'axios';
 import { useContext } from 'react';
 import { Store } from '../Store';
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
 
 function Product(props) {
   const { product } = props;
+  
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
@@ -38,7 +41,15 @@ function Product(props) {
           <Card.Title>{product.name}</Card.Title>
         </Link>
         <Rating rating={product.rating} numReviews={product.numReviews} />
-        <Card.Text>${product.price}</Card.Text>
+        {product.discount.type === 'none' ? (
+          <Card.Text>${product.price}</Card.Text>
+        ) : (
+          <Row>
+            <Col><Card.Text style={{ textDecoration: 'line-through' }} >${product.price}</Card.Text></Col>
+            <Col><Card.Text class="text-danger" >${product.final_price}</Card.Text></Col>
+          </Row>
+        )}
+        {/* <Card.Text>${product.price}</Card.Text> */}
         {product.countInStock === 0 ? (
           <Button variant="light" disabled>
             Out of stock
