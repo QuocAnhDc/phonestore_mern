@@ -74,6 +74,8 @@ export default function ProductEditScreen() {
   const [description, setDescription] = useState('');
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [discount, setDiscount] = useState([]);
+  const [discounts, setDiscounts] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,6 +91,7 @@ export default function ProductEditScreen() {
         setCategory(data.category);
         setCountInStock(data.countInStock);
         setBrand(data.brand);
+        setDiscount(data.discount);
         setDescription(data.description);
         dispatch({ type: 'FETCH_SUCCESS'});
       } catch (err) {
@@ -103,6 +106,7 @@ export default function ProductEditScreen() {
         const { data } = await axios.get(`/api/products/element`);
         setCategories(data.categories);
         setBrands(data.brands);
+        setDiscounts(data.discounts);
         // console.log(data.categories)
         // console.log(data.brands)
       } catch (err) {
@@ -128,6 +132,7 @@ export default function ProductEditScreen() {
           images,
           category,
           brand,
+          discount,
           countInStock,
           description,
         },
@@ -281,6 +286,24 @@ export default function ProductEditScreen() {
             >
               {categories.map((category) => (
                 <option key = {category._id} value={category._id} >{category.category}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="discount">
+            <Form.Label>Discount</Form.Label>
+            {/* <Form.Control
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            /> */}
+            <Form.Select
+              value={discount}
+              onChange={(e) => setDiscount(e.currentTarget.value)}
+              required
+            >
+              {/* <option key = "nothing" value="" >None</option> */}
+              {discounts.map((discount) => (
+                <option key = {discount._id} value={discount._id} >{discount.type}</option>
               ))}
             </Form.Select>
           </Form.Group>

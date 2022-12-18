@@ -39,7 +39,8 @@ import UserEditScreen from './screens/UserEditScreen';
 import MapScreen from './screens/MapScreen';
 import BrandEditScreen from './screens/BrandEditScreen';
 import CategoryEditScreen from './screens/CategoryEditScreen';
-
+import DiscountEditScreen from './screens/DiscountEditScreen';
+import DiscountListScreen from './screens/DiscountListScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -57,35 +58,15 @@ function App() {
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    // const fetchCategories = async () => {
-    //   try {
-    //     const { data } = await axios.get(`/api/products/categories`);
-    //     setCategories(data);
-    //   } catch (err) {
-    //     toast.error(getError(err));
-    //   }
-    // };
-    // const fetchBrands = async () => {
-    //   try {
-    //     const { data } = await axios.get(`/api/products/brands`);
-    //     setBrands(data);
-    //   } catch (err) {
-    //     toast.error(getError(err));
-    //   }
-    // }
     const fetchElement = async () => {
       try {
         const { data } = await axios.get(`/api/products/element`);
         setCategories(data.categories);
         setBrands(data.brands);
-        // console.log(data.categories)
-        // console.log(data.brands)
       } catch (err) {
         toast.error(getError(err));
       }
     };
-    // fetchCategories();
-    // fetchBrands();
     fetchElement();
   }, []);
   return (
@@ -168,6 +149,9 @@ function App() {
                       </LinkContainer>
                       <LinkContainer to="/admin/users">
                         <NavDropdown.Item>Users</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/discounts">
+                        <NavDropdown.Item>Discounts</NavDropdown.Item>
                       </LinkContainer>
                     </NavDropdown>
                   )}
@@ -312,6 +296,22 @@ function App() {
                 element={
                   <AdminRoute>
                     <CategoryListScreen />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/discounts"
+                element={
+                  <AdminRoute>
+                    <DiscountListScreen />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/discount/:id"
+                element={
+                  <AdminRoute>
+                    <DiscountEditScreen />
                   </AdminRoute>
                 }
               ></Route>

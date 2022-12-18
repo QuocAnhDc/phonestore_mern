@@ -4,6 +4,7 @@ import Product from '../models/productModel.js';
 import Category from "../models/categoryModel.js";
 import Brand from "../models/brandModel.js";
 import { isAuth, isAdmin } from '../utils.js';
+import Discount from '../models/discountModel.js';
 
 const productRouter = express.Router();
 
@@ -19,7 +20,7 @@ productRouter.get('/paginate', async (req, res) => {
   const { query } = req;
   const page = query.page || 1;
   const pageSize = 8;
-  const products = await Product.find()
+  const products = await Product.find().populate('discount')
                                     .skip(pageSize * (page - 1))
                                     .limit(pageSize);;
   const countProducts = await Product.countDocuments();
@@ -35,6 +36,7 @@ productRouter.post(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const discount = await Discount.findOne({type:'none'})
     const newProduct = new Product({
       name: 'sample name ' + Date.now(),
       slug: 'sample-name-' + Date.now(),
@@ -42,6 +44,7 @@ productRouter.post(
       price: 0,
       // category: 'sample category',
       // brand: 'sample brand',
+      discount : discount._id,
       countInStock: 0,
       rating: 0,
       numReviews: 0,
@@ -66,6 +69,7 @@ productRouter.put(
       product.image = req.body.image;
       product.images = req.body.images;
       product.category = req.body.category;
+      product.discount = req.body.discount;
       product.brand = req.body.brand;
       product.countInStock = req.body.countInStock;
       product.description = req.body.description;
@@ -139,7 +143,7 @@ productRouter.get(
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
 
-    const products = await Product.find().populate('brand','brand').populate('category','category')
+    const products = await Product.find().populate('brand','brand').populate('category','category').populate('discount')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
     const countProducts = await Product.countDocuments();
@@ -235,28 +239,15 @@ productRouter.get(
 );
 
 productRouter.get(
-  '/categories',
-  expressAsyncHandler(async (req, res) => {
-    const categories = await Product.find().distinct('category');
-    res.send(categories);
-  })
-);
-productRouter.get(
-  '/brands',
-  expressAsyncHandler(async (req, res) => {
-    const brands = await Product.find().distinct('brand');
-    res.send(brands);
-  })
-);
-
-productRouter.get(
   '/element',
   expressAsyncHandler(async (req, res) => {
     const brands = await Brand.find();
     const categories = await Category.find();
+    const discounts = await Discount.find();
     res.send({
       brands : brands,
-      categories: categories
+      categories: categories,
+      discounts: discounts,
     });
   })
 );

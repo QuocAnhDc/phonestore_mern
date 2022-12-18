@@ -6,6 +6,7 @@ import seedRouter from './routes/seedRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import brandRouter from './routes/brandRouter.js';
 import categortyRouter from './routes/categortyRouter.js';
+import discountRouter from './routes/discountRouter.js'
 import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
 import uploadRouter from './routes/uploadRoutes.js';
@@ -38,6 +39,7 @@ app.use('/api/seed', seedRouter);
 app.use('/api/products', productRouter);
 app.use('/api/brands', brandRouter);
 app.use('/api/categories', categortyRouter);
+app.use('/api/discounts', discountRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 
