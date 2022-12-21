@@ -8,6 +8,7 @@ import { Helmet } from "react-helmet-async";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import Button from 'react-bootstrap/Button';
+import Carousel from 'react-bootstrap/Carousel';
 import LinkContainer from 'react-router-bootstrap/LinkContainer';
 // import data from '../data';
 
@@ -16,12 +17,13 @@ const reducer = (state, action) => {
     case "FETCH_REQUEST":
       return { ...state, loading: true };
     case "FETCH_SUCCESS":
-      return { 
-        ...state, 
-        products: action.payload.products, 
+      return {
+        ...state,
+        products: action.payload.products,
         page: action.payload.page,
         pages: action.payload.pages,
-        loading: false };
+        loading: false
+      };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
     default:
@@ -34,7 +36,7 @@ function HomeScreen() {
   const sp = new URLSearchParams(search)
   // console.log(sp)
   const page = sp.get('page') || 1;
-  const [{ loading, error, products, pages}, dispatch] = 
+  const [{ loading, error, products, pages }, dispatch] =
     useReducer(reducer, {
       loading: true,
       error: '',
@@ -63,6 +65,55 @@ function HomeScreen() {
       <Helmet>
         <title>PhoneStore</title>
       </Helmet>
+      <Carousel fade>
+        <Carousel.Item>
+          <LinkContainer to="/search?brand=639c3e3de78d34c1d1a76401">
+          <img 
+            width={800}
+            height = {450}
+            className="d-block w-100"
+            src="https://media.idownloadblog.com/wp-content/uploads/2019/09/Apple-Innovation-Event-banner.jpg"
+            alt="First slide"
+          />
+          </LinkContainer>
+          <Carousel.Caption>
+            <h3>Apple</h3>
+            <p>Đột phá công nghệ</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <LinkContainer to="/search?brand=6395d4594ffa4adada98d54f">
+          <img
+            width={800}
+            height = {450}
+            className="d-block w-100"
+            src="https://phuongtung.vn/pt/images/blog/14/banner_7bai-57.jpg"
+            alt="Second slide"
+          />
+          </LinkContainer>
+
+          <Carousel.Caption>
+            <h3>Samsung</h3>
+            <p>Màn hình đỉnh cao</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <LinkContainer to="/search?brand=6395d4914ffa4adada98d564">
+          <img
+            width={800}
+            height = {450}
+            className="d-block w-100"
+            src="https://trak.in/wp-content/uploads/2017/10/Oppo-Banner.jpg"
+            alt="Third slide"
+          />
+          </LinkContainer>
+          <Carousel.Caption>
+            <p>
+              Hiệu năng siêu đẳng
+            </p>
+          </Carousel.Caption>
+        </Carousel.Item>
+      </Carousel>
       <h1>Featured Products</h1>
       <Col className="products">
         {loading ? (
@@ -74,12 +125,12 @@ function HomeScreen() {
             <Row>
               {products.map((product) => (
                 <Col key={product._id} sm={6} md={4} lg={3} className="mb-3 me-2"
-                  style={{ width: '19rem' , height:'30rem'}}>
+                  style={{ width: '19rem', height: '30rem' }}>
                   <Product product={product}></Product>
                 </Col>
               ))}
             </Row>
-            
+
           </>
         )}
       </Col>
@@ -99,7 +150,7 @@ function HomeScreen() {
           </LinkContainer>
         ))}
       </Col>
-      
+
     </div>
   );
 }

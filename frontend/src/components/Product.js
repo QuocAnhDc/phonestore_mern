@@ -42,11 +42,14 @@ function Product(props) {
         </Link>
         <Rating rating={product.rating} numReviews={product.numReviews} />
         {product.discount.type === 'none' ? (
-          <Card.Text>${product.price}</Card.Text>
+          <Row>
+            <Col><Card.Text >${product.price}</Card.Text></Col>
+
+          </Row>
         ) : (
           <Row>
             <Col><Card.Text style={{ textDecoration: 'line-through' }} >${product.price}</Card.Text></Col>
-            <Col><Card.Text class="text-danger" >${product.final_price}</Card.Text></Col>
+            <Col><Card.Text className="text-danger" >${product.final_price}</Card.Text></Col>
           </Row>
         )}
         {/* <Card.Text>${product.price}</Card.Text> */}

@@ -8,6 +8,7 @@ import Badge from 'react-bootstrap/Badge';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
+import Carousel from 'react-bootstrap/Carousel';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from './Store';
@@ -41,6 +42,7 @@ import BrandEditScreen from './screens/BrandEditScreen';
 import CategoryEditScreen from './screens/CategoryEditScreen';
 import DiscountEditScreen from './screens/DiscountEditScreen';
 import DiscountListScreen from './screens/DiscountListScreen';
+import { BsCartPlusFill } from "react-icons/bs";
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -78,13 +80,13 @@ function App() {
               ? 'site-container active-cont d-flex flex-column full-box'
               : 'site-container active-cont d-flex flex-column'
             : fullBox
-            ? 'site-container d-flex flex-column full-box'
-            : 'site-container d-flex flex-column'
+              ? 'site-container d-flex flex-column full-box'
+              : 'site-container d-flex flex-column'
         }
       >
         <ToastContainer position="bottom-center" limit={1} />
-        <header>
-          <Navbar bg="dark" variant="dark" expand="lg">
+        <header style={{ height: 100 }}>
+          <Navbar bg="secondary" variant="dark" expand="lg" style={{ height: 75 }}>
             <Container>
               <Button
                 variant="dark"
@@ -101,6 +103,7 @@ function App() {
                 <SearchBox />
                 <Nav className="me-auto  w-100  justify-content-end">
                   <Link to="/cart" className="nav-link">
+                    <span><BsCartPlusFill/> </span>
                     Cart
                     {cart.cartItems.length > 0 && (
                       <Badge pill bg="danger">
