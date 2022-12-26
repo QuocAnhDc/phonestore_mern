@@ -74,7 +74,7 @@ export default function OrderHistoryScreen() {
           </thead>
           <tbody>
             {orders.map((order) => (
-              <tr key={order._id}>
+              <tr className={order.isCancel ? "border text-danger" : ((order.isPaid && order.isDelivered) ? "border text-success" : "border text-warning")} key={order._id}>
                 <td>{order._id}</td>
                 <td>{order.createdAt.substring(0, 10)}</td>
                 <td>{order.totalPrice.toFixed(2)}</td>

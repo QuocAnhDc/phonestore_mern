@@ -345,18 +345,18 @@ function App() {
               <Route
                 path="/admin/orders/:id"
                 element={
-                  <ProtectedRoute>
+                  <AdminRoute>
                     <OrderScreenAdmin />
-                  </ProtectedRoute>
+                  </AdminRoute>
                 }
               ></Route>
 
               <Route
                 path="/"
                 element={
-                  <ProtectedRoute>
+                  
                     <HomeScreen />
-                  </ProtectedRoute>
+                  
                 }
               ></Route>
             </Routes>

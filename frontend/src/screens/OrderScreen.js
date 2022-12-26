@@ -32,18 +32,14 @@ function reducer(state, action) {
     case 'PAY_RESET':
       return { ...state, loadingPay: false, successPay: false };
 
-    case 'DELIVER_REQUEST':
-      return { ...state, loadingDeliver: true };
-    case 'DELIVER_SUCCESS':
-      return { ...state, loadingDeliver: false, successDeliver: true };
-    case 'DELIVER_FAIL':
-      return { ...state, loadingDeliver: false };
-    case 'DELIVER_RESET':
-      return {
-        ...state,
-        loadingDeliver: false,
-        successDeliver: false,
-      };
+    case 'CANCEL_REQUEST':
+      return { ...state, loadingCancel: true };
+    case 'CANCEL_SUCCESS':
+      return { ...state, loadingCancel: false, successCancel: true };
+    case 'CANCEL_FAIL':
+      return { ...state, loadingCancel: false };
+    case 'CANCEL_RESET':
+      return { ...state, loadingCancel: false, successCancel: false };
     default:
       return state;
   }
@@ -64,8 +60,8 @@ export default function OrderScreen() {
       paymentMethod,
       successPay,
       loadingPay,
-      loadingDeliver,
-      successDeliver,
+      loadingCancel,
+      successCancel
     },
     dispatch,
   ] = useReducer(reducer, {
@@ -75,6 +71,7 @@ export default function OrderScreen() {
     error: '',
     successPay: false,
     loadingPay: false,
+
   });
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
@@ -138,15 +135,15 @@ export default function OrderScreen() {
     if (
       !order._id ||
       successPay ||
-      successDeliver ||
+      successCancel ||
       (order._id && order._id !== orderId)
     ) {
       fetchOrder();
       if (successPay) {
         dispatch({ type: 'PAY_RESET' });
       }
-      if (successDeliver) {
-        dispatch({ type: 'DELIVER_RESET' });
+      if (successCancel) {
+        dispatch({ type: 'CANCEL_RESET' });
       }
     } else {
       const loadPaypalScript = async () => {
@@ -171,24 +168,24 @@ export default function OrderScreen() {
     navigate,
     paypalDispatch,
     successPay,
-    successDeliver,
+    successCancel,
   ]);
 
-  async function deliverOrderHandler() {
+  async function cancelOrderHandler() {
     try {
-      dispatch({ type: 'DELIVER_REQUEST' });
+      dispatch({ type: 'CANCEL_REQUEST' });
       const { data } = await axios.put(
-        `/api/orders/${order._id}/deliver`,
+        `/api/orders/${order._id}/cancel`,
         {},
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'DELIVER_SUCCESS', payload: data });
-      toast.success('Order is delivered');
+      dispatch({ type: 'CANCEL_SUCCESS', payload: data });
+      toast.success('Order is canceled');
     } catch (err) {
       toast.error(getError(err));
-      dispatch({ type: 'DELIVER_FAIL' });
+      dispatch({ type: 'CANCEL_FAIL' });
     }
   }
 
@@ -307,7 +304,7 @@ export default function OrderScreen() {
                     </Col>
                   </Row>
                 </ListGroup.Item>
-                {!order.isPaid && (
+                {!order.isCancel &&!order.isPaid && (
                   <ListGroup.Item>
                     {isPending ? (
                       <LoadingBox />
@@ -323,12 +320,17 @@ export default function OrderScreen() {
                     {loadingPay && <LoadingBox></LoadingBox>}
                   </ListGroup.Item>
                 )}
-                {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                {order.isCancel && (
                   <ListGroup.Item>
-                    {loadingDeliver && <LoadingBox></LoadingBox>}
+                    <strong className='text-danger'> Order is canceled</strong>
+                  </ListGroup.Item>
+                )}
+                {!order.isCancel && !order.isPaid && !order.isDelivered && (
+                  <ListGroup.Item>
+                    {loadingCancel && <LoadingBox></LoadingBox>}
                     <div className="d-grid">
-                      <Button type="button" onClick={deliverOrderHandler}>
-                        Deliver Order
+                      <Button type="button" onClick={cancelOrderHandler}>
+                        Cancel Order
                       </Button>
                     </div>
                   </ListGroup.Item>

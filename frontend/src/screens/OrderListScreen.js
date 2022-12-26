@@ -108,12 +108,13 @@ export default function OrderListScreen() {
               <th>TOTAL</th>
               <th>PAID</th>
               <th>DELIVERED</th>
+              <th>CANCELED</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
-              <tr key={order._id}>
+              <tr className={order.isCancel ? "border text-danger" : ((order.isPaid && order.isDelivered) ? "border text-success" : "border text-warning")} key={order._id}>
                 <td>{order._id}</td>
                 <td>{order.user ? order.user.name : 'DELETED USER'}</td>
                 <td>{order.createdAt.substring(0, 10)}</td>
@@ -123,6 +124,11 @@ export default function OrderListScreen() {
                 <td>
                   {order.isDelivered
                     ? order.deliveredAt.substring(0, 10)
+                    : 'No'}
+                </td>
+                <td>
+                  {order.isCancel
+                    ? order.cancelAt.substring(0, 10)
                     : 'No'}
                 </td>
                 <td>
