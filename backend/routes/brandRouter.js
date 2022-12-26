@@ -50,7 +50,7 @@ brandRouter.put(
   })
 );
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 8;
 
 brandRouter.get(
   '/admin',

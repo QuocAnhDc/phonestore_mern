@@ -135,6 +135,22 @@ orderRouter.put(
 );
 
 orderRouter.put(
+  '/:id/cancel',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      order.isCancel = true;
+      order.cancelAt = Date.now();
+      await order.save();
+      res.send({ message: 'Order Canceled' });
+    } else {
+      res.status(404).send({ message: 'Order Not Found' });
+    }
+  })
+);
+
+orderRouter.put(
   '/:id/pay',
   isAuth,
   expressAsyncHandler(async (req, res) => {

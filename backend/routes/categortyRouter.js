@@ -50,7 +50,7 @@ categoryRouter.put(
   })
 );
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 8;
 
 categoryRouter.get(
   '/admin',
