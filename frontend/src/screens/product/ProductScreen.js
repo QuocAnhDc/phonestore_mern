@@ -8,12 +8,12 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
-import Rating from '../components/Rating';
+import Rating from '../../components/Rating';
 import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
-import { getError } from '../utils';
-import { Store } from '../Store';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
+import { getError } from '../../utils';
+import { Store } from '../../Store';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { toast } from 'react-toastify';
 
@@ -145,7 +145,16 @@ function ProductScreen() {
                 numReviews={product.numReviews}
               ></Rating>
             </ListGroup.Item>
-            <ListGroup.Item>Pirce : ${product.price}</ListGroup.Item>
+            {product.discount.type === 'none' ? (
+              <ListGroup.Item>Price : ${product.price}</ListGroup.Item>
+            ) : (
+              <ListGroup.Item>Price : <span style={{ textDecoration: 'line-through' }}>${product.price}</span> <span className="text-danger">${product.final_price}</span></ListGroup.Item>
+              // <Row>
+              //   <Col><Card.Text style={{ textDecoration: 'line-through' }} >${product.price}</Card.Text></Col>
+              //   <Col><Card.Text className="text-danger" >${product.final_price}</Card.Text></Col>
+              // </Row>
+            )}
+            
             <ListGroup.Item>
               <Row xs={1} md={2} className="g-2">
                 {[product.image, ...product.images].map((x) => (
@@ -177,7 +186,7 @@ function ProductScreen() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Price:</Col>
-                    <Col>${product.price}</Col>
+                    <Col>${product.final_price}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>

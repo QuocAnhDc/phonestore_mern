@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Store } from '../Store';
-import { getError } from '../utils';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
 import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
 import Button from 'react-bootstrap/Button';
 
 const reducer = (state, action) => {
@@ -43,11 +43,11 @@ const reducer = (state, action) => {
 };
 
 
-export default function BrandEditScreen(){
+export default function DiscountEditScreen(){
 
   const navigate = useNavigate();
   const params = useParams(); // /product/:id
-  const { id: brandId } = params;
+  const { id: discountId } = params;
 
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -57,16 +57,20 @@ export default function BrandEditScreen(){
       error: '',
     });
 
-  const [brand, setBrand] = useState('');
-  const [description, setDescription] = useState('');
+  const [type, setType] = useState('');
+  const [percent_discount, setPercent] = useState('');
+  const [date_start, setStart] = useState('');
+  const [date_end, setEnd] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(`/api/brands/${brandId}`);
-        setBrand(data.brand);
-        setDescription(data.description);
+        const { data } = await axios.get(`/api/discounts/${discountId}`);
+        setType(data.type);
+        setPercent(data.percent_discount);
+        setStart(data.date_start);
+        setEnd(data.date_end);
         dispatch({ type: 'FETCH_SUCCESS' });
       } catch (err) {
         dispatch({
@@ -76,18 +80,20 @@ export default function BrandEditScreen(){
       }
     };
     fetchData();
-  }, [brandId]);
+  }, [discountId]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       dispatch({ type: 'UPDATE_REQUEST' });
       await axios.put(
-        `/api/brands/${brandId}`,
+        `/api/discounts/${discountId}`,
         {
-          _id: brandId,
-          brand,
-          description,
+          _id: discountId,
+          type,
+          percent_discount,
+          date_start,
+          date_end,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -96,8 +102,8 @@ export default function BrandEditScreen(){
       dispatch({
         type: 'UPDATE_SUCCESS',
       });
-      toast.success('Brand updated successfully');
-      navigate('/admin/brands');
+      toast.success('Discount updated successfully');
+      navigate('/admin/discounts');
     } catch (err) {
       toast.error(getError(err));
       dispatch({ type: 'UPDATE_FAIL' });
@@ -107,9 +113,9 @@ export default function BrandEditScreen(){
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Edit Product ${brandId}</title>
+        <title>Edit Discount </title>
       </Helmet>
-      <h1>Edit Product {brandId}</h1>
+      <h1>Edit Discount </h1>
 
       {loading ? (
         <LoadingBox></LoadingBox>
@@ -117,21 +123,41 @@ export default function BrandEditScreen(){
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="brand">
-            <Form.Label>Brand</Form.Label>
+          <Form.Group className="mb-3" controlId="discount">
+            <Form.Label>Discount</Form.Label>
             <Form.Control
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
+              value={type}
+              onChange={(e) => setType(e.target.value)}
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="description">
-            <Form.Label>Description</Form.Label>
+          <Form.Group className="mb-3" controlId="percent">
+            <Form.Label>PERCENT</Form.Label>
             <Form.Control
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={percent_discount}
+              onChange={(e) => setPercent((e.target.value))}
               required
             />
+          </Form.Group>
+          <Form.Group controlId="startdate">
+            <Form.Label>SET DATE START</Form.Label>
+            <Form.Control
+              type="date"
+              name="startdate"
+              placeholder="Due date"
+              value={date_start}
+              onChange={(e) => setStart(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="endadate">
+            <Form.Label>SET DATE END</Form.Label>
+              <Form.Control
+                type="date"
+                name="endate"
+                placeholder="Due date"
+                value={date_end}
+                onChange={(e) => setEnd(e.target.value)}
+              />
           </Form.Group>
           <div className="mb-3">
             <Button disabled={loadingUpdate} type="submit">

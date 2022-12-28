@@ -8,10 +8,10 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
-import { Store } from '../Store';
-import CheckoutSteps from '../components/CheckoutSteps';
-import LoadingBox from '../components/LoadingBox';
+import { getError } from '../../utils';
+import { Store } from '../../Store';
+import CheckoutSteps from '../../components/CheckoutSteps';
+import LoadingBox from '../../components/LoadingBox';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -40,8 +40,9 @@ export default function PlaceOrderScreen() {
   cart.itemsPrice = round2(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.final_price, 0)
   );
-  cart.shippingPrice = cart.itemsPrice > 100 ? round2(0) : round2(10);
-  cart.taxPrice = round2(0.15 * cart.itemsPrice);
+
+  cart.shippingPrice = cart.itemsPrice > 1000 ? round2(0) : round2(10);
+  cart.taxPrice = round2(0.1 * cart.itemsPrice);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
 
   const placeOrderHandler = async () => {

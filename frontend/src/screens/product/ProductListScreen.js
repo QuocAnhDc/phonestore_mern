@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import axios from 'axios';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import { Store } from '../Store';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
+import { Store } from '../../Store';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
+import { getError } from '../../utils';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -17,7 +17,7 @@ const reducer = (state, action) => {
     case 'FETCH_SUCCESS':
       return {
         ...state,
-        categories: action.payload.categories,
+        products: action.payload.products,
         page: action.payload.page,
         pages: action.payload.pages,
         loading: false,
@@ -52,19 +52,19 @@ const reducer = (state, action) => {
   }
 };
 
-export default function CategoryListScreen(){
+export default function ProductListScreen() {
   const [
     {
       loading,
       error,
-      categories,
+      products,
       pages,
       loadingCreate,
       loadingDelete,
       successDelete,
     },
-    dispatch
-  ] = useReducer(reducer,{
+    dispatch,
+  ] = useReducer(reducer, {
     loading: true,
     error: '',
   });
@@ -80,7 +80,7 @@ export default function CategoryListScreen(){
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/api/categories/admin?page=${page} `, {
+        const { data } = await axios.get(`/api/products/admin?page=${page} `, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
 
@@ -100,15 +100,15 @@ export default function CategoryListScreen(){
       try {
         dispatch({ type: 'CREATE_REQUEST' });
         const { data } = await axios.post(
-          '/api/categories',
+          '/api/products',
           {},
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        toast.success('category created successfully');
+        toast.success('product created successfully');
         dispatch({ type: 'CREATE_SUCCESS' });
-        navigate(`/admin/category/${data.category._id}`);
+        navigate(`/admin/product/${data.product._id}`);
       } catch (err) {
         toast.error(getError(error));
         dispatch({
@@ -118,13 +118,13 @@ export default function CategoryListScreen(){
     }
   };
 
-  const deleteHandler = async (category) => { 
+  const deleteHandler = async (product) => {
     if (window.confirm('Are you sure to delete?')) {
       try {
-        await axios.delete(`/api/categories/${category._id}`, {
+        await axios.delete(`/api/products/${product._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        toast.success('category deleted successfully');
+        toast.success('product deleted successfully');
         dispatch({ type: 'DELETE_SUCCESS' });
       } catch (err) {
         toast.error(getError(error));
@@ -139,12 +139,12 @@ export default function CategoryListScreen(){
     <div>
       <Row>
         <Col>
-          <h1>Categories</h1>
+          <h1>Products</h1>
         </Col>
         <Col className="col text-end">
           <div>
             <Button type="button" onClick={createHandler}>
-              Create Category
+              Create Product
             </Button>
           </div>
         </Col>
@@ -162,23 +162,27 @@ export default function CategoryListScreen(){
           <table className="table">
             <thead>
               <tr>
-                <th>ID</th>
+                
+                <th>NAME</th>
+                <th>PRICE</th>
                 <th>CATEGORY</th>
-                <th>DESCRIPTION</th>
+                <th>BRAND</th>
                 <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {categories.map((category) => (
-                <tr key={category._id}>
-                  <td>{category._id}</td>
-                  <td>{category.category}</td>
-                  <td>{category.description}</td>
+              {products.map((product) => (
+                <tr key={product._id}>
+                 
+                  <td>{product.name}</td>
+                  <td>{product.price}</td>
+                  <td>{product.category ? product.category.category : 'No Category'}</td>
+                  <td>{product.brand ? product.brand.brand : 'No Brand'}</td>
                   <td>
                     <Button
                       type="button"
                       variant="light"
-                      onClick={() => navigate(`/admin/category/${category._id}`)}
+                      onClick={() => navigate(`/admin/product/${product._id}`)}
                     >
                       Edit
                     </Button>
@@ -186,7 +190,7 @@ export default function CategoryListScreen(){
                     <Button
                       type="button"
                       variant="light"
-                      onClick={() => deleteHandler(category)}
+                      onClick={() => deleteHandler(product)}
                     >
                       Delete
                     </Button>
@@ -200,7 +204,7 @@ export default function CategoryListScreen(){
               <Link
                 className={x + 1 === Number(page) ? 'btn text-bold' : 'btn'}
                 key={x + 1}
-                to={`/admin/categories?page=${x + 1}`}
+                to={`/admin/products?page=${x + 1}`}
               >
                 {x + 1}
               </Link>
@@ -209,6 +213,5 @@ export default function CategoryListScreen(){
         </>
       )}
     </div>
-    
-  )
+  );
 }

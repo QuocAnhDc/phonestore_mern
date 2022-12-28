@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Store } from '../Store';
-import { getError } from '../utils';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
 import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
 import Button from 'react-bootstrap/Button';
 
 const reducer = (state, action) => {
@@ -185,9 +185,9 @@ export default function ProductEditScreen() {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Edit Product ${productId}</title>
+        <title>Edit Product </title>
       </Helmet>
-      <h1>Edit Product {productId}</h1>
+      <h1>Edit Product </h1>
 
       {loading ? (
         <LoadingBox></LoadingBox>

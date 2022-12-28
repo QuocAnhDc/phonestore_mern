@@ -4,10 +4,10 @@ import Button from 'react-bootstrap/Button';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
-import { Store } from '../Store';
-import { getError } from '../utils';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -103,7 +103,7 @@ export default function UserListScreen() {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
+              
               <th>NAME</th>
               <th>EMAIL</th>
               <th>IS ADMIN</th>
@@ -113,7 +113,7 @@ export default function UserListScreen() {
           <tbody>
             {users.map((user) => (
               <tr key={user._id}>
-                <td>{user._id}</td>
+                
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.isAdmin ? 'YES' : 'NO'}</td>

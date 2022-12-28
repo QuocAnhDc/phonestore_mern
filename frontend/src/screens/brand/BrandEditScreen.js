@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Store } from '../Store';
-import { getError } from '../utils';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
 import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
 import Button from 'react-bootstrap/Button';
 
 const reducer = (state, action) => {
@@ -43,11 +43,11 @@ const reducer = (state, action) => {
 };
 
 
-export default function CategoryEditScreen(){
+export default function BrandEditScreen(){
 
   const navigate = useNavigate();
   const params = useParams(); // /product/:id
-  const { id: categoryId } = params;
+  const { id: brandId } = params;
 
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -57,15 +57,15 @@ export default function CategoryEditScreen(){
       error: '',
     });
 
-  const [category, setCategory] = useState('');
+  const [brand, setBrand] = useState('');
   const [description, setDescription] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(`/api/categories/${categoryId}`);
-        setCategory(data.category);
+        const { data } = await axios.get(`/api/brands/${brandId}`);
+        setBrand(data.brand);
         setDescription(data.description);
         dispatch({ type: 'FETCH_SUCCESS' });
       } catch (err) {
@@ -76,17 +76,17 @@ export default function CategoryEditScreen(){
       }
     };
     fetchData();
-  }, [categoryId]);
+  }, [brandId]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       dispatch({ type: 'UPDATE_REQUEST' });
       await axios.put(
-        `/api/categories/${categoryId}`,
+        `/api/brands/${brandId}`,
         {
-          _id: categoryId,
-          category,
+          _id: brandId,
+          brand,
           description,
         },
         {
@@ -96,8 +96,8 @@ export default function CategoryEditScreen(){
       dispatch({
         type: 'UPDATE_SUCCESS',
       });
-      toast.success('Category updated successfully');
-      navigate('/admin/categories');
+      toast.success('Brand updated successfully');
+      navigate('/admin/brands');
     } catch (err) {
       toast.error(getError(err));
       dispatch({ type: 'UPDATE_FAIL' });
@@ -107,9 +107,9 @@ export default function CategoryEditScreen(){
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Edit Category ${categoryId}</title>
+        <title>Edit Brand </title>
       </Helmet>
-      <h1>Edit Category {categoryId}</h1>
+      <h1>Edit Brand</h1>
 
       {loading ? (
         <LoadingBox></LoadingBox>
@@ -118,10 +118,10 @@ export default function CategoryEditScreen(){
       ) : (
         <Form onSubmit={submitHandler}>
           <Form.Group className="mb-3" controlId="brand">
-            <Form.Label>Category</Form.Label>
+            <Form.Label>Brand</Form.Label>
             <Form.Control
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
               required
             />
           </Form.Group>

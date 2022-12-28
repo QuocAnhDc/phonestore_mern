@@ -8,10 +8,10 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
-import { Store } from '../Store';
-import { getError } from '../utils';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
 import { toast } from 'react-toastify';
 
 function reducer(state, action) {
@@ -176,9 +176,9 @@ export default function OrderScreen() {
   ) : (
     <div>
       <Helmet>
-        <title>Order {orderId}</title>
+        <title>Order {order.createdAt.substring(0, 10)}</title>
       </Helmet>
-      <h1 className="my-3">Order {orderId}</h1>
+      <h1 className="my-3">Order {order.createdAt.substring(0, 10)}</h1>
       <Row>
         <Col md={8}>
           <Card className="mb-3">

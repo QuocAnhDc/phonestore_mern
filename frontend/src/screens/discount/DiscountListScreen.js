@@ -3,12 +3,12 @@ import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import { Store } from '../Store';
+import { Store } from '../../Store';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
+import { getError } from '../../utils';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -17,7 +17,7 @@ const reducer = (state, action) => {
     case 'FETCH_SUCCESS':
       return {
         ...state,
-        brands: action.payload.brands,
+        discounts: action.payload.discounts,
         page: action.payload.page,
         pages: action.payload.pages,
         loading: false,
@@ -52,12 +52,12 @@ const reducer = (state, action) => {
   }
 };
 
-export default function BrandListScreen(){
+export default function DiscountListScreen(){
   const [
     {
       loading,
       error,
-      brands,
+      discounts,
       pages,
       loadingCreate,
       loadingDelete,
@@ -80,7 +80,7 @@ export default function BrandListScreen(){
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/api/brands/admin?page=${page} `, {
+        const { data } = await axios.get(`/api/discounts/admin?page=${page} `, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
 
@@ -100,15 +100,15 @@ export default function BrandListScreen(){
       try {
         dispatch({ type: 'CREATE_REQUEST' });
         const { data } = await axios.post(
-          '/api/brands',
+          '/api/discounts',
           {},
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        toast.success('brands created successfully');
+        toast.success('discount created successfully');
         dispatch({ type: 'CREATE_SUCCESS' });
-        navigate(`/admin/brand/${data.brand._id}`);
+        navigate(`/admin/discount/${data.discount._id}`);
       } catch (err) {
         toast.error(getError(error));
         dispatch({
@@ -118,13 +118,13 @@ export default function BrandListScreen(){
     }
   };
 
-  const deleteHandler = async (brand) => { 
+  const deleteHandler = async (category) => { 
     if (window.confirm('Are you sure to delete?')) {
       try {
-        await axios.delete(`/api/brands/${brand._id}`, {
+        await axios.delete(`/api/discounts/${category._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        toast.success('brand deleted successfully');
+        toast.success('discount deleted successfully');
         dispatch({ type: 'DELETE_SUCCESS' });
       } catch (err) {
         toast.error(getError(error));
@@ -139,12 +139,12 @@ export default function BrandListScreen(){
     <div>
       <Row>
         <Col>
-          <h1>Brands</h1>
+          <h1>Discounts</h1>
         </Col>
         <Col className="col text-end">
           <div>
             <Button type="button" onClick={createHandler}>
-              Create Brand
+              Create Discount
             </Button>
           </div>
         </Col>
@@ -162,23 +162,23 @@ export default function BrandListScreen(){
           <table className="table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>BRAND</th>
-                <th>DESCRIPTION</th>
+              
+                <th>DISCOUNT TYPE</th>
+                <th>PERCENT DISCOUNT</th>
                 <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {brands.map((brand) => (
-                <tr key={brand._id}>
-                  <td>{brand._id}</td>
-                  <td>{brand.brand}</td>
-                  <td>{brand.description}</td>
+              {discounts.map((discount) => (
+                <tr key={discount._id}>
+                 
+                  <td>{discount.type}</td>
+                  <td>{discount.percent_discount ? discount.percent_discount : 'no data'} %</td>
                   <td>
                     <Button
                       type="button"
                       variant="light"
-                      onClick={() => navigate(`/admin/brand/${brand._id}`)}
+                      onClick={() => navigate(`/admin/discount/${discount._id}`)}
                     >
                       Edit
                     </Button>
@@ -186,7 +186,7 @@ export default function BrandListScreen(){
                     <Button
                       type="button"
                       variant="light"
-                      onClick={() => deleteHandler(brand)}
+                      onClick={() => deleteHandler(discount)}
                     >
                       Delete
                     </Button>
@@ -200,7 +200,7 @@ export default function BrandListScreen(){
               <Link
                 className={x + 1 === Number(page) ? 'btn text-bold' : 'btn'}
                 key={x + 1}
-                to={`/admin/brands?page=${x + 1}`}
+                to={`/admin/discounts?page=${x + 1}`}
               >
                 {x + 1}
               </Link>

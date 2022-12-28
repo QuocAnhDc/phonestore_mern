@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import LoadingBox from '../components/LoadingBox';
-import MessageBox from '../components/MessageBox';
-import { Store } from '../Store';
-import { getError } from '../utils';
+import LoadingBox from '../../components/LoadingBox';
+import MessageBox from '../../components/MessageBox';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
 import Button from 'react-bootstrap/esm/Button';
 
 const reducer = (state, action) => {
@@ -64,7 +64,7 @@ export default function OrderHistoryScreen() {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
+              {/* <th>ID</th> */}
               <th>DATE</th>
               <th>TOTAL</th>
               <th>PAID</th>
@@ -75,7 +75,7 @@ export default function OrderHistoryScreen() {
           <tbody>
             {orders.map((order) => (
               <tr className={order.isCancel ? "border text-danger" : ((order.isPaid && order.isDelivered) ? "border text-success" : "border text-warning")} key={order._id}>
-                <td>{order._id}</td>
+                {/* <td>{order._id}</td> */}
                 <td>{order.createdAt.substring(0, 10)}</td>
                 <td>{order.totalPrice.toFixed(2)}</td>
                 <td>{order.isPaid ? order.paidAt.substring(0, 10) : 'No'}</td>
