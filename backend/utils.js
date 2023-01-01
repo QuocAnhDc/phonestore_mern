@@ -111,3 +111,15 @@ export const payOrderEmailTemplate = (order) => {
   </p>
   `;
 };
+
+export const placeOrderEmailTemplate = (order,user) => {
+  return `
+  <h1>${user.email} place order id : ${order._id}</h1>
+  `;
+};
+
+export const cancelOrderEmailTemplate = (order,user) => {
+  return `
+  <h1>${user.email} cancel order id : ${order._id}</h1>
+  `;
+};

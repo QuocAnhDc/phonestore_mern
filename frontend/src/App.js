@@ -12,7 +12,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from './Store';
-import CartScreen from './screens/CartScreen';
+import CartScreen from './screens/order/CartScreen';
 import SigninScreen from './screens/authorized/SigninScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import SignupScreen from './screens/authorized/SignupScreen';

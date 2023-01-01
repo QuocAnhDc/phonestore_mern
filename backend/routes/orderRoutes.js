@@ -3,7 +3,7 @@ import expressAsyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 import User from '../models/userModel.js';
 import Product from '../models/productModel.js';
-import { isAuth, isAdmin, transport, payOrderEmailTemplate } from '../utils.js';
+import { isAuth, isAdmin, transport, payOrderEmailTemplate, placeOrderEmailTemplate, cancelOrderEmailTemplate } from '../utils.js';
 
 const orderRouter = express.Router();
 
@@ -21,6 +21,7 @@ orderRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
     const newOrder = new Order({
       orderItems: req.body.orderItems.map((x) => ({ ...x, product: x._id })),
       shippingAddress: req.body.shippingAddress,
@@ -31,8 +32,29 @@ orderRouter.post(
       totalPrice: req.body.totalPrice,
       user: req.user._id,
     });
-
+    const items = req.body.orderItems;
+    for (const item of items) {
+      const product = await Product.findById(item._id);
+      product.countInStock = (product.countInStock - item.quantity);
+      await product.save();
+    }
     const order = await newOrder.save();
+    transport
+      .sendMail(
+        {
+          from: `User ${user.email}`,
+          to: 'PhoneStore <phonestore.shop@gmail.com>',
+          subject: `Place order ${order._id}`,
+          html: placeOrderEmailTemplate(order, user),
+        },
+        (error, body) => {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(body);
+          }
+        }
+      );
     res.status(201).send({ message: 'New Order Created', order });
   })
 );
@@ -138,11 +160,36 @@ orderRouter.put(
   '/:id/cancel',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate(
+      'user',
+      'email name'
+    );
     if (order) {
       order.isCancel = true;
       order.cancelAt = Date.now();
+      const items = order.orderItems;
+      for (const item of items) {
+        const product = await Product.findById(item._id);
+        product.countInStock = (product.countInStock + item.quantity);
+        await product.save();
+      }
       await order.save();
+      transport
+        .sendMail(
+          {
+            from: `${order.user.name} <${order.user.email}>`,
+            to: 'PhoneStore <phonestore.shop@gmail.com>',
+            subject: `Cancel order ${order._id}`,
+            html: cancelOrderEmailTemplate(order,order.user),
+          },
+          (error, body) => {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(body);
+            }
+          }
+        );
       res.send({ message: 'Order Canceled' });
     } else {
       res.status(404).send({ message: 'Order Not Found' });

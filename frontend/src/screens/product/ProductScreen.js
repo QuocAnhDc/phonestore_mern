@@ -154,7 +154,7 @@ function ProductScreen() {
               //   <Col><Card.Text className="text-danger" >${product.final_price}</Card.Text></Col>
               // </Row>
             )}
-            
+
             <ListGroup.Item>
               <Row xs={1} md={2} className="g-2">
                 {[product.image, ...product.images].map((x) => (
@@ -199,6 +199,12 @@ function ProductScreen() {
                         <Badge bg="danger">Unavailable</Badge>
                       )}
                     </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>InStock:</Col>
+                    <Col>{product.countInStock}</Col>
                   </Row>
                 </ListGroup.Item>
 
